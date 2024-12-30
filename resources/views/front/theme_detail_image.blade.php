@@ -32,21 +32,9 @@
                             <div class="modal-body">
                                 <p><strong>Deskripsi:</strong> {{ $m->description }}</p>
                                 <p><strong>Tipe:</strong> {{ $m->type }}</p>
-                                @if ($m->type === 'image')
-                                    <div style="text-align: center;">
-                                        <img src="{{ asset('storage/media_files/' . $m->file_path) }}" alt="{{ $m->name }}" class="img-fluid">
-                                    </div>
-                                @elseif ($m->type === 'sound')
-                                    <audio controls>
-                                        <source src="{{ asset('storage/media_files/' . $m->file_path) }}" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                                @elseif ($m->type === 'video')
-                                    <video controls width="100%">
-                                        <source src="{{ asset('storage/media_files/' . $m->file_path) }}" type="video/mp4">
-                                        Your browser does not support the video element.
-                                    </video>
-                                @endif
+                                <div style="text-align: center;">
+                                    <img src="{{ asset('storage/media_files/' . $m->file_path) }}" alt="{{ $m->name }}" class="img-fluid">
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
