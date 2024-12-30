@@ -15,7 +15,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($themes as $index => $theme)
+                            @forelse ($themes as $index => $theme)
                                 <tr>
                                     <td>{{ $themes->firstItem() + $index }}</td>
                                     <td>{{ $theme->name }}</td>
@@ -24,7 +24,9 @@
                                         <a href="{{ url('theme/details', $theme->id) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-eye"></i> View</a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                Theme not available.
+                            @endforelse
                         </tbody>
                     </table>
 

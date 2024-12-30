@@ -13,7 +13,7 @@ class FrontController extends Controller
     public function index()
     {
         // Menampilkan Daftar Tema
-        $themes = Theme::select('id', 'name', 'description', 'status')->paginate(6);
+        $themes = Theme::select('id', 'name', 'description', 'status')->where('status', 1)->paginate(6);
 
         return view('front/welcome', compact('themes'));
     }
@@ -21,7 +21,7 @@ class FrontController extends Controller
     public function theme()
     {
         // Menampilkan Daftar Tema
-        $themes = Theme::select('id', 'name', 'description')->paginate(10); // 10 page
+        $themes = Theme::select('id', 'name', 'description')->where('status', 1)->paginate(10); // 10 page
 
         return view('front/theme', compact('themes'));
     }
@@ -29,7 +29,7 @@ class FrontController extends Controller
     public function themeDetails($id)
     {
         // Menampilkan Detail Tema
-        $themes = Theme::findOrFail($id);
+        $themes = Theme::where('status', 1)->findOrFail($id);
 
         return view('front/theme_detail', compact('themes'));
     }
@@ -37,10 +37,11 @@ class FrontController extends Controller
     public function themeDetailsImage($id)
     {
         // Ambil tema berdasarkan ID
-        $theme = Theme::findOrFail($id);
+        $theme = Theme::where('status', 1)->findOrFail($id);
 
         // Ambil media yang terkait dengan tema, lalu gunakan pagination
         $media = Media::where('theme_id', $id)
+                    ->where('status', 1)
                     ->where('type', 'image')
                     ->paginate(6);
 
@@ -50,10 +51,11 @@ class FrontController extends Controller
     public function themeDetailsSound($id)
     {
        // Ambil tema berdasarkan ID
-       $theme = Theme::findOrFail($id);
+       $theme = Theme::where('status', 1)->findOrFail($id);
 
        // Ambil media yang terkait dengan tema, lalu gunakan pagination
        $media = Media::where('theme_id', $id)
+                   ->where('status', 1)
                    ->where('type', 'sound')
                    ->paginate(6);
 
@@ -67,6 +69,7 @@ class FrontController extends Controller
 
         // Ambil media yang terkait dengan tema, lalu gunakan pagination
         $media = Media::where('theme_id', $id)
+                    ->where('status', 1)
                     ->where('type', 'video')
                     ->paginate(6);
 

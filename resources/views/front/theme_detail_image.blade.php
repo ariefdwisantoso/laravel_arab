@@ -7,7 +7,7 @@
             <p>{{ $theme->description }}</p>
             <hr><br>
             <div class="media-list">
-                @foreach ($media as $m)
+                @forelse ($media as $m)
                 <div class="col-lg-4 col-md-4 col-sm-6">
                     <div class="single-brand-item d-table" title="{{ $m->name }}" data-toggle="modal" data-target="#mediaModal_{{ $m->id }}">
                         <div class="d-table-cell text-center">
@@ -42,8 +42,9 @@
                         </div>
                     </div>
                 </div>
-
-                @endforeach
+                @empty
+                Media not available.
+                @endforelse
                 <!-- Tambahkan Paginasi -->
                 <div class="pagination-wrapper">
                     {{ $media->links() }}
