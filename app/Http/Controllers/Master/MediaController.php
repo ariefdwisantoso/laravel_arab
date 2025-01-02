@@ -18,8 +18,7 @@ class MediaController extends Controller
 
         if (request()->ajax()) {
             // Fetch data from Media model with related Theme
-            $media = Media::with('theme') // Load the related Theme model
-                ->select('id', 'theme_id', 'type', 'file_path', 'name', 'description', 'status');
+            $media = Media::query()->with('theme');
 
             // Return DataTables response
             return DataTables::of($media)
@@ -39,14 +38,32 @@ class MediaController extends Controller
                         : '<span class="inline-block px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-full">Disabled</span>';
                 })
                 ->addColumn('file', function ($row) {
-                    $fileUrl = asset('storage/media_files/' . $row->file_path); // Buat URL file
+                    $fileUrl = asset('storage/media_files/' . $row->image); // Buat URL file
+                    $fileUrlSound = asset('storage/media_files/' . $row->file_path); 
                     if ($row->type === 'image') {
                         // Render HTML untuk menampilkan gambar
-                        return '<img src="' . $fileUrl . '" alt="' . $row->name . '" class="w-16 h-16 rounded">';
-                    } else {
-                        return '<a href="' . $fileUrl . '" target="_blank" class="text-blue-500 underline">View File</a>';
+                        return '<img src="' . $fileUrl . '" alt="' . $row->name . '" class="w-16 h-16 rounded"> <br> 
+                                <audio controls> 
+                                    <source src="' . $fileUrlSound . '" type="audio/mpeg">
+                                </audio>';
+                    } elseif($row->type === 'video') {
+                        $videoUrl = asset('storage/media_files/' . $row->file_path);
+
+                        // You can then use $videoUrl in your controller like this:
+                        return '<video controls width="100%">
+                                    <source src="' . $videoUrl . '" type="video/mp4">
+                                </video>';
+                    } elseif ($row->type === 'quiz') {
+                        return '<a href="' . $row->link . '" target="_blank">Quiz Link</a>';
                     }
-                })                            
+                })
+                
+                ->addColumn('file_path', function ($row) {
+                    $fileUrl = asset('storage/theme_files/' . $row->file_path); // Buat URL file
+                    return '<audio controls> 
+                                <source src="' . $fileUrl . '" type="audio/mpeg">
+                            </audio>';
+                })  
                 ->addColumn('theme', function ($row) {
                     // Display related theme name if available
                     return $row->theme ? $row->theme->name : '<span class="text-gray-500">No theme assigned</span>';
@@ -65,48 +82,47 @@ class MediaController extends Controller
         $validatedData = $request->validate([
             'mediaName' => 'required|string|max:255',
             'mediaDescription' => 'required|string|max:500',
-            'mediaType' => 'required|string|in:image,sound,video',
-            'mediaFile' => [
-                'required',
-                'file',
-                'max:20240', // Maksimum 10 MB
-                function ($attribute, $value, $fail) use ($request) {
-                    $allowedMimeTypes = [
-                        'image' => ['jpeg', 'png', 'jpg', 'gif', 'webp'],
-                        'sound' => ['mp3', 'wav', 'ogg'],
-                        'video' => ['mp4', 'mov', 'avi', 'mkv'],
-                    ];
-
-                    $mediaType = $request->mediaType;
-
-                    if (isset($allowedMimeTypes[$mediaType])) {
-                        $validator = \Validator::make(
-                            [$attribute => $value],
-                            [$attribute => 'mimes:' . implode(',', $allowedMimeTypes[$mediaType])]
-                        );
-
-                        if ($validator->fails()) {
-                            $fail("The $attribute must be a valid $mediaType file.");
-                        }
-                    } else {
-                        $fail("Invalid media type selected.");
-                    }
-                },
-            ],
             'mediaTheme' => 'nullable|exists:theme,id',
+            'mediaType' => 'required|string|in:image,quiz,video', // Validate mediaType
         ]);
 
+        // Initialize variables for file paths
+        $fileNameImage = null;
+        $fileNameSound = null;
+        $fileNameVideo = null;
+        
+        if ($request->hasFile('mediaFile')) {
+            $filePathImage = $request->file('mediaFile')->store('media_files', 'public');
+            $fileNameImage = basename($filePathImage);
+        }
         // Save file to storage
-        $filePath = $request->file('mediaFile')->store('media_files', 'public');
-        $fileName = basename($filePath);
+        if ($request->hasFile('mediaSound')) {
+            $filePathSound = $request->file('mediaSound')->store('media_files', 'public');
+            $fileNameSound = basename($filePathSound);
+        }
+
+        if ($request->hasFile('mediaVideo')) {
+            $filePathVideo = $request->file('mediaVideo')->store('media_files', 'public');
+            $fileNameVideo = basename($filePathVideo);
+        }
+
+
         // Save data to database
         $media = new Media();
         $media->name = $validatedData['mediaName'];
         $media->description = $validatedData['mediaDescription'];
         $media->type = $validatedData['mediaType'];
-        $media->file_path = $fileName; 
+        if ($request->hasFile('mediaFile')) {
+            $media->image = $fileNameImage;
+        }
+        if($validatedData['mediaType'] == "image"){
+            $media->file_path = $fileNameSound;
+        }elseif($validatedData['mediaType'] == "video"){
+            $media->file_path = $fileNameVideo;
+        }
         $media->theme_id = $validatedData['mediaTheme'] ?? null; // Opsional
         $media->status = true;
+        $media->link = $request->input('mediaQuiz') ?? null;
         $media->save();
 
         return response()->json(['message' => 'Media created successfully!']);
@@ -120,47 +136,88 @@ class MediaController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validasi data
-        $validatedData = $request->validate([
-            'mediaNameEdit' => 'required|string|max:255',
-            'mediaDescriptionEdit' => 'required|string|max:500',
-            'mediaTypeEdit' => 'required|string|in:image,sound,video',
-            'mediaFileEdit' => 'nullable|file|max:10240', // File tidak wajib
-            'mediaThemeEdit' => 'nullable|exists:theme,id',
-            'mediaStatusEdit' => 'required|boolean',
-        ]);
-
-        // Temukan media yang akan diupdate
+        // Temukan media berdasarkan ID
         $media = Media::findOrFail($id);
 
-        // Perbarui field
-        $media->name = $validatedData['mediaNameEdit'];
-        $media->description = $validatedData['mediaDescriptionEdit'];
-        $media->type = $validatedData['mediaTypeEdit'];
-        $media->theme_id = $validatedData['mediaThemeEdit'] ?? null;
-        $media->status = $validatedData['mediaStatusEdit'];
+         // Validate the input
+         $request->validate([
+            'mediaNameEdit' => 'required|string|max:255' . $id,
+        ]);
 
-        // Periksa jika ada file baru diunggah
+        // Initialize variables for file paths (untuk menyimpan nama file yang baru)
+        $fileNameImage = $media->image;
+        $fileNameSound = $media->file_path; // Ini default file_path sebelum update
+        $fileNameVideo = $media->file_path; // Ini default file_path sebelum update
+
+        // Periksa jika ada file gambar baru
         if ($request->hasFile('mediaFileEdit')) {
             // Hapus file lama jika ada
-            $filePath = public_path('storage/media_files/' . $media->file_path);
-
-            // Periksa apakah file terkait ada dan hapus file menggunakan unlink
-            if (file_exists($filePath)) {
-                unlink($filePath);
+            if ($media->image) {
+                Storage::disk('public')->delete('media_files/' . $media->image);
             }
 
             // Simpan file baru
-            $filePath = $request->file('mediaFileEdit')->store('media_files', 'public');
-            $fileName = basename($filePath);
-            $media->file_path = basename($fileName);
+            $filePathImage = $request->file('mediaFileEdit')->store('media_files', 'public');
+            $fileNameImage = basename($filePathImage);
         }
 
-        // Simpan perubahan
+        // Periksa jika ada file suara baru
+        if ($request->hasFile('mediaSoundEdit')) {
+            // Hapus file lama jika ada
+            if ($media->file_path) {
+                Storage::disk('public')->delete('media_files/' . $media->file_path);
+            }
+
+            // Simpan file baru
+            $filePathSound = $request->file('mediaSoundEdit')->store('media_files', 'public');
+            $fileNameSound = basename($filePathSound);
+        }
+
+        // Periksa jika ada file video baru
+        if ($request->hasFile('mediaVideoEdit')) {
+            // Hapus file lama jika ada
+            if ($media->file_path) {
+                Storage::disk('public')->delete('media_files/' . $media->file_path);
+            }
+
+            // Simpan file baru
+            $filePathVideo = $request->file('mediaVideoEdit')->store('media_files', 'public');
+            $fileNameVideo = basename($filePathVideo);
+        }
+
+        // Ambil nama media dari inputan request
+        $mediaName = $request->input('mediaNameEdit');
+
+        // Pastikan nama media tidak kosong
+        if (empty($mediaName)) {
+            return response()->json(['error' => 'Media name is required.'], 400);
+        }
+
+        // Perbarui data media
+        $media->name = $mediaName;
+        $media->description = $request->input('mediaDescriptionEdit');
+        $media->type = $request->input('mediaTypeEdit');
+
+        // Atur file paths berdasarkan tipe media
+        if ($request->input('mediaTypeEdit') == "image") {
+            $media->file_path = $fileNameSound;
+            $media->image = $fileNameImage; // Jika tipe adalah image, simpan file image path
+        } elseif ($request->input('mediaTypeEdit') == "video") {
+            $media->file_path = $fileNameVideo; // Jika tipe adalah video, simpan file video path
+        }
+
+        $media->theme_id = $request->input('mediaThemeEdit'); // Opsional
+        $media->status = true;
+        $media->link = $request->input('mediaQuizEdit');
+
+        // Simpan perubahan ke database
         $media->save();
 
         return response()->json(['message' => 'Media updated successfully!']);
     }
+
+    
+
 
     public function destroy($id)
     {
@@ -171,8 +228,8 @@ class MediaController extends Controller
         $filePath = public_path('storage/media_files/' . $media->file_path);
 
         // Periksa apakah file terkait ada dan hapus file menggunakan unlink
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        if (file_exists($filePath) && is_file($filePath)) {
+            unlink($filePath); // Menghapus file
         }
 
         // Hapus entri media dari database

@@ -9,8 +9,9 @@
                         <thead class="thead-light">
                             <tr>
                                 <th class="text-left" style="width: 10px;">No</th>
-                                <th class="text-left">Name</th>
-                                <th class="text-left">Description</th>
+                                <th class="text-left"  style="width: 100px;">Name</th>
+                                <th class="text-left"  style="width: 100px;">Description</th>
+                                <th class="text-left"  style="width: 200px;">File</th>
                                 <th class="text-center" style="width: 20px;">Action</th>
                             </tr>
                         </thead>
@@ -20,6 +21,21 @@
                                     <td>{{ $themes->firstItem() + $index }}</td>
                                     <td>{{ $theme->name }}</td>
                                     <td>{{ $theme->description }}</td>
+                                    <td>
+                                        <div style="text-align: center;">
+                                            <!-- Gambar -->
+                                            <a href="{{ url('theme/details', $theme->id) }}" class="btn btn-info btn-sm">
+                                                <img src="{{ asset('storage/theme_files/' . $theme->image) }}" alt="{{ $theme->name }}" class="img-fluid">
+                                            </a>
+                                            <br><br>
+
+                                            <!-- Audio -->
+                                            <audio controls>
+                                                <source src="{{ asset('storage/theme_files/' . $theme->file_path) }}" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </div>
+                                    </td>
                                     <td class="text-center">
                                         <a href="{{ url('theme/details', $theme->id) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-eye"></i> View</a>
                                     </td>

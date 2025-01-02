@@ -41,8 +41,10 @@
 					<!-- Collect the nav links, forms, and other content for toggling -->
 					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
 						<ul class="nav navbar-nav menu_nav justify-content-end">
-							<li class="nav-item active"><a class="nav-link" href="{{ url('/') }}">Home</a></li>
-							<li class="nav-item"><a class="nav-link" href="{{ url('theme/details') }}">Theme</a></li>
+							<li class="nav-item active"><a class="nav-link" href="{{ url('/') }}">Beranda</a></li>
+							<li class="nav-item"><a class="nav-link" href="{{ url('theme/details') }}">Materi</a></li>
+							<li class="nav-item"><a class="nav-link" href="{{ url('/front/profil') }}">Profil</a></li>
+							<li class="nav-item"><a class="nav-link" href="{{ url('/juknis') }}">Petunjuk Penggunaan</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url('login') }}">Login</a></li>
 						</ul>
 					</div>

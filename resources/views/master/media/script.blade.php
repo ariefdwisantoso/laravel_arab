@@ -15,6 +15,18 @@
         $('#createMediaForm').submit(function(event) {
             event.preventDefault();
 
+            // Check if mediaType exists before proceeding
+            var mediaType = $('#mediaType').val();
+            if (!mediaType) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please select a media type!',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop the submission if mediaType is not selected
+            }
+
             // Ambil data form
             var formData = new FormData(this);
 
@@ -57,6 +69,7 @@
                 }
             });
         });
+
         // Initialize DataTables
         var table = $('#mediaTable').DataTable({
             processing: true,
@@ -170,7 +183,7 @@
                 $('#mediaTypeEdit').val(response.type);
                 $('#mediaThemeEdit').val(response.theme_id);
                 $('#mediaStatusEdit').val(response.status);
-
+                $('#mediaQuizEdit').val(response.link);
                 // Tampilkan modal edit
                 $('#editModalMedia').removeClass('hidden');
             },

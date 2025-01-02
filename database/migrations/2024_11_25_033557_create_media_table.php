@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('media', function (Blueprint $table) {
             $table->id(); 
             $table->unsignedBigInteger('theme_id')->nullable();
-            $table->string('name'); 
+            $table->string('name')->nullable(); 
             $table->string('type');
-            $table->string('file_path');
+            $table->string('file_path')->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(true);  
             $table->timestamps();

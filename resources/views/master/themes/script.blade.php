@@ -15,19 +15,16 @@
         $('#createThemeForm').submit(function(event) {
             event.preventDefault(); // Prevent the default form submission
 
-            // Get the theme name and description from the input fields
-            var themeName = $('#themeName').val();
-            var themeDescription = $('#themeDescription').val();
+            // Ambil data form
+            var formData = new FormData(this);
 
             // Send the AJAX request
             $.ajax({
                 url: "{{ route('theme.create') }}", // URL to send the request to
                 method: 'POST',
-                data: {
-                    themeName: themeName,
-                    themeDescription: themeDescription,
-                    _token: '{{ csrf_token() }}' // Add CSRF token for Laravel
-                },
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function(response) {
                     // Handle successful response with SweetAlert
                     Swal.fire({
@@ -89,6 +86,14 @@
                 {
                     data: 'description',
                     name: 'description'
+                },
+                {
+                    data: 'image',
+                    name: 'image'
+                },
+                {
+                    data: 'file_path',
+                    name: 'file_path'
                 },
                 {
                     data: 'status',
@@ -184,18 +189,15 @@
         e.preventDefault(); // Prevent the default form submission
 
         var themeId = $('.edit-theme').data('id'); // Get the theme ID
-        var formData = {
-            name: $('#name').val(),
-            description: $('#description').val(),
-            status: $('#status').val(),
-            _token: '{{ csrf_token() }}' // CSRF token for security
-        };
+        var formData = new FormData(this); // Ambil semua data dari form
 
         // Send AJAX request to update the theme
         $.ajax({
             url: '{{ route("theme.update", ":id") }}'.replace(':id', themeId), // Use named route for the update
-            method: 'PUT', // Use PUT method
+            method: 'POST',
             data: formData,
+            processData: false, // Required for FormData
+            contentType: false, // Required for FormData
             success: function(response) {
                 Swal.fire('Success', 'Theme updated successfully!', 'success');
                 $('#editModalTheme').addClass('hidden'); // Hide modal after update
@@ -204,7 +206,7 @@
             error: function(xhr) {
                 if (xhr.status === 422) {
                     var errors = xhr.responseJSON.errors || {};
-                    var errorMessages = Object.values(errors).flat().join('<br>'); // Gabungkan pesan kesalahan
+                    var errorMessages = Object.values(errors).flat().join('<br>');
                     Swal.fire('Validation Error', errorMessages, 'error');
                 } else {
                     Swal.fire('Error', 'Unable to update theme', 'error');
@@ -212,4 +214,5 @@
             }
         });
     });
+
 </script>

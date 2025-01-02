@@ -60,7 +60,7 @@
                     <div class="mb-4">
                         <select id="mediaType" name="mediaType" class="mt-2 px-4 py-2 border border-green-300 rounded-lg w-full" required>
                             <option value="image">Image</option>
-                            <option value="sound">Sound</option>
+                            <option value="quiz">Quiz</option>
                             <option value="video">Video</option>
                         </select>
                     </div>
@@ -76,8 +76,18 @@
                         @endif
                     </select>
 
-                    <label for="mediaFile" class="block text-green-800">Upload File:</label>
-                    <input type="file" id="mediaFile" name="mediaFile" class="mt-2" required>
+                    <label for="mediaFile" class="block text-green-800">Image:</label>
+                    <input type="file" id="mediaFile" name="mediaFile" class="mt-2">
+
+                    <label for="mediaSound" class="block text-green-800">Sound:</label>
+                    <input type="file" id="mediaSound" name="mediaSound" class="mt-2">
+
+                    <label for="mediaVideo" class="block text-green-800">Video:</label>
+                    <input type="file" id="mediaVideo" name="mediaVideo" class="mt-2">
+
+                    <label for="mediaQuiz" class="block text-green-800">Link</label>
+                    <input type="text" id="mediaQuiz" name="mediaQuiz" class="mt-2 px-4 py-2 border border-green-300 rounded-lg w-full" placeholder="Enter Link Quizi">
+
 
                     <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg mt-4 w-full hover:bg-blue-600">Create</button>
                 </form>
@@ -107,7 +117,7 @@
                     <div class="mb-4">
                         <select id="mediaTypeEdit" name="mediaTypeEdit" class="mt-2 px-4 py-2 border border-green-300 rounded-lg w-full" required>
                             <option value="image">Image</option>
-                            <option value="sound">Sound</option>
+                            <option value="quiz">Quiz</option>
                             <option value="video">Video</option>
                         </select>
                     </div>
@@ -129,8 +139,17 @@
                             <option value="0">Disabled</option>
                         </select>
                     </div>
-                    <label for="mediaFileEdit" class="block text-green-800">Upload File:</label>
-                    <input type="file" id="mediaFileEdit" name="mediaFileEdit" class="mt-2" required>
+                    <label for="mediaFileEdit" class="block text-green-800">Image:</label>
+                    <input type="file" id="mediaFileEdit" name="mediaFileEdit" class="mt-2">
+
+                    <label for="mediaSoundEdit" class="block text-green-800">Sound:</label>
+                    <input type="file" id="mediaSoundEdit" name="mediaSoundEdit" class="mt-2">
+
+                    <label for="mediaVideoEdit" class="block text-green-800">Video:</label>
+                    <input type="file" id="mediaVideoEdit" name="mediaVideoEdit" class="mt-2">
+
+                    <label for="mediaQuizEdit" class="block text-green-800">Link</label>
+                    <input type="text" id="mediaQuizEdit" name="mediaQuizEdit" class="mt-2 px-4 py-2 border border-green-300 rounded-lg w-full" placeholder="Enter Link Quizi">
 
                     <div class="flex justify-end">
                         <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Save</button>

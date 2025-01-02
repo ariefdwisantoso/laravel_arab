@@ -19,6 +19,8 @@
                                     <th class="px-6 py-3 text-left">No</th>
                                     <th class="px-6 py-3 text-left">Name</th>
                                     <th class="px-6 py-3 text-left">Description</th>
+                                    <th class="px-6 py-3 text-left">Image</th>
+                                    <th class="px-6 py-3 text-left">File</th>
                                     <th class="px-6 py-3 text-left">Status</th>
                                     <th class="px-6 py-3 text-center">Action</th>
                                 </tr>
@@ -45,13 +47,19 @@
                     </button>
                 </div>
 
-                <form id="createThemeForm" class="mt-4">
+                <form id="createThemeForm" class="mt-4" enctype="multipart/form-data">
                     @csrf
                     <label for="themeName" class="block text-blue-800">Theme Name</label>
                     <input type="text" id="themeName" name="themeName" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full" placeholder="Enter theme name" required>
 
                     <label for="themeDescription" class="block text-blue-800 mt-4">Theme Description</label>
                     <textarea id="themeDescription" name="themeDescription" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full" placeholder="Enter description" required></textarea>
+
+                    <label for="themeFile" class="block text-blue-800">Image:</label>
+                    <input type="file" id="themeFile" name="themeFile" class="mt-2">
+
+                    <label for="themeSound" class="block text-blue-800">Sound:</label>
+                    <input type="file" id="themeSound" name="themeSound" class="mt-2">
 
                     <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg mt-4 w-full hover:bg-blue-600">Create</button>
                 </form>
@@ -69,28 +77,37 @@
                         <i class="fa-solid fa-times"></i>
                     </button>
                 </div>
-                <form id="editThemeForm">
+                <form id="editThemeForm" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-4">
                         <label for="name" class="block text-blue-800">Name</label>
-                        <input type="text" id="name" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full" />
+                        <input type="text" id="name" name="name" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full" />
                     </div>
                     <div class="mb-4">
                         <label for="description" class="block text-blue-800">Description</label>
-                        <textarea id="description" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full"></textarea>
+                        <textarea id="description" name="description" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full"></textarea>
                     </div>
                     <div class="mb-4">
                         <label for="status" class="block text-blue-800">Status</label>
-                        <select id="status" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full">
+                        <select id="status" name="status" class="mt-2 px-4 py-2 border border-blue-300 rounded-lg w-full">
                             <option value="1">Enabled</option>
                             <option value="0">Disabled</option>
                         </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="themeFileEdit" class="block text-blue-800">Image:</label>
+                        <input type="file" id="themeFileEdit" name="themeFileEdit" class="mt-2">
+                    </div>
+                    <div class="mb-4">
+                        <label for="themeSoundEdit" class="block text-blue-800">Sound:</label>
+                        <input type="file" id="themeSoundEdit" name="themeSoundEdit" class="mt-2">
                     </div>
                     <div class="flex justify-end">
                         <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Save</button>
                         <button type="button" id="cancelModal" class="px-6 py-2 bg-gray-500 text-white rounded-md ml-2 hover:bg-gray-600">Cancel</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

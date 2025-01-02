@@ -26,10 +26,7 @@
                                 <div style="text-align: center;">
                                     <!-- Gambar -->
                                     <a href="#" class="btn btn-info btn-sm">
-                                        <video controls width="100%">
-                                            <source src="{{ asset('storage/media_files/' . $m->file_path) }}" type="video/mp4">
-                                            Your browser does not support the video element.
-                                        </video>
+                                        <img src="{{ asset('storage/media_files/' . $m->image) }}" alt="{{ $m->name }}" class="img-fluid">
                                     </a>
                                     <br><br>
 

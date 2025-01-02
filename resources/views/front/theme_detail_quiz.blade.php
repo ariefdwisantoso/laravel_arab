@@ -22,24 +22,7 @@
                             <td>{{ $media->firstItem() + $index }}</td>
                             <td>{{ $m->name }}</td>
                             <td>{{ $m->description }}</td>
-                            <td>
-                                <div style="text-align: center;">
-                                    <!-- Gambar -->
-                                    <a href="#" class="btn btn-info btn-sm">
-                                        <video controls width="100%">
-                                            <source src="{{ asset('storage/media_files/' . $m->file_path) }}" type="video/mp4">
-                                            Your browser does not support the video element.
-                                        </video>
-                                    </a>
-                                    <br><br>
-
-                                    <!-- Audio -->
-                                    <audio controls>
-                                        <source src="{{ asset('storage/media_files/' . $m->file_path) }}" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                                </div>
-                            </td>
+                            <td><a href="{{ url('theme/details/quiz/mulai', $m->id) }}"> Mulai Quiz</a></td>
                         </tr>
                         @empty
                             <tr>

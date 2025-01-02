@@ -8,7 +8,7 @@
                     <div class="single-brand-item d-table">
                         <div class="d-table-cell text-center">
                             <img src="{{ url('satner/img/picture.png') }}" alt="">
-                            <a href="{{ url('theme/details/image', $themes->id) }}">Image</a>
+                            <a href="{{ url('theme/details/kosakata', $themes->id) }}">Kosakata</a>
                         </div>
                     </div>
                 </div>
@@ -16,7 +16,7 @@
                     <div class="single-brand-item d-table">
                         <div class="d-table-cell text-center">
                             <img src="{{ url('satner/img/sound.png') }}" alt="">
-                            <a href="{{ url('theme/details/sound', $themes->id) }}">Sound</a>
+                            <a href="{{ url('theme/details/video', $themes->id) }}">Percakapan</a>
                         </div>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                     <div class="single-brand-item d-table">
                         <div class="d-table-cell text-center">
                             <img src="{{ url('satner/img/folder.png') }}" alt="">
-                            <a href="{{ url('theme/details/video', $themes->id) }}">Video</a>
+                            <a href="{{ url('theme/details/quiz', $themes->id) }}">Quiz</a>
                         </div>
                     </div>
                 </div>

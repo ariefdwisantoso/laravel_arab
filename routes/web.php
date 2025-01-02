@@ -7,14 +7,6 @@ use App\Http\Controllers\Master\ThemeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('/', [FrontController::class, 'index'])->name('index');
-Route::get('/theme/details', [FrontController::class, 'theme'])->name('theme');
-Route::get('/theme/details/{id}', [FrontController::class, 'themeDetails'])->name('themeDetails');
-Route::get('/theme/details/image/{id}', [FrontController::class, 'themeDetailsImage'])->name('themeDetailsImage');
-Route::get('/theme/details/sound/{id}', [FrontController::class, 'themeDetailsSound'])->name('themeDetailsSound');
-Route::get('/theme/details/video/{id}', [FrontController::class, 'themeDetailsVideo'])->name('themeDetailsVideo');
-
 Route::get('/dashboard', [HomeController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -28,7 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/theme', [ThemeController::class, 'index'])->name('theme.index');
     Route::post('/create-theme', [ThemeController::class, 'store'])->name('theme.create');
     Route::get('/theme/{id}/edit', [ThemeController::class, 'edit'])->name('theme.edit');
-    Route::put('/theme/{id}/edit', [ThemeController::class, 'update'])->name('theme.update');
+    Route::post('/theme/{id}/edit', [ThemeController::class, 'update'])->name('theme.update');
     Route::delete('/theme/{id}', [ThemeController::class, 'destroy'])->name('theme.destroy');
 
      // Route Media
@@ -39,5 +31,16 @@ Route::middleware('auth')->group(function () {
      Route::delete('/media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');
 
 });
+
+Route::get('/', [FrontController::class, 'index'])->name('index');
+Route::get('/theme/details', [FrontController::class, 'theme'])->name('theme');
+Route::get('/theme/details/{id}', [FrontController::class, 'themeDetails'])->name('themeDetails');
+Route::get('/theme/details/kosakata/{id}', [FrontController::class, 'themeDetailsKosakata'])->name('themeDetailsKosakata');
+Route::get('/theme/details/video/{id}', [FrontController::class, 'themeDetailsVideo'])->name('themeDetailsVideo');
+Route::get('/theme/details/quiz/{id}', [FrontController::class, 'themeDetailsQuiz'])->name('themeDetailsQuiz');
+Route::get('/theme/details/quiz/mulai/{id}', [FrontController::class, 'themeDetailsQuizMulai'])->name('themeDetailsQuizMulai');
+Route::get('/front/profil', [FrontController::class, 'frontProfil'])->name('frontProfil');
+Route::get('/juknis', [FrontController::class, 'juknis'])->name('juknis');
+
 
 require __DIR__.'/auth.php';
